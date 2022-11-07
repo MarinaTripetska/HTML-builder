@@ -13,4 +13,4 @@ async function readFile() {
   }
 }
 
-readFile();
+readFile()
