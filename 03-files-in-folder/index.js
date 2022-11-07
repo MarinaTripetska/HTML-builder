@@ -15,17 +15,18 @@ async function readDir() {
       encoding: "utf8",
       withFileTypes: true,
     });
-
     files.forEach((file) => {
       if (!file.isDirectory()) {
         const pathToFile = path.join(pathToDir, file.name);
         const nameFile = path.basename(pathToFile);
         const extFile = path.extname(pathToFile);
-        fs.stat(path.join(pathToDir, file.name)).then((res) => {
+
+        fs.stat(pathToFile).then((res) => {
           console.log(
             `${nameFile.replace(extFile, "")} - ${extFile.replace(".", "")} - ${bytesToKBytes(res.size)}kb`
           );
         });
+
       }
     });
   } catch (error) {
