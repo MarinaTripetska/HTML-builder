@@ -44,4 +44,8 @@ async function buildStyles(stylesDir, distDir){
   }
 }
 
-buildStyles(pathToStylesDir, pathToDistDir)
+buildStyles(pathToStylesDir, pathToDistDir);
+
+module.exports = {
+  buildStyles,
+}
