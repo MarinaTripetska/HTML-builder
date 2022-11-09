@@ -5,9 +5,9 @@ const path = require("path");
 const pathToStylesDir = path.join(__dirname, "styles");
 const pathToDistDir = path.join(__dirname, "project-dist");
 
-async function buildStyles(stylesDir, distDir){
+async function buildStyles(stylesDir, distDir, nameBundleFile = 'style.css'){
   try {
-    const bundleFilePath = path.join(distDir, 'bundle.css');
+    const bundleFilePath = path.join(distDir, nameBundleFile);
     await fs.writeFile(bundleFilePath, '');
     const stylesFiles = await fs.readdir(stylesDir, { withFileTypes: true });
 
@@ -44,7 +44,7 @@ async function buildStyles(stylesDir, distDir){
   }
 }
 
-buildStyles(pathToStylesDir, pathToDistDir);
+buildStyles(pathToStylesDir, pathToDistDir, "bundle.css");
 
 module.exports = {
   buildStyles,
