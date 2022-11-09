@@ -31,3 +31,6 @@ async function copyDir (src, dest) {
 
 copyDir(pathToSrcDir, pathToDestDir);
 
+module.exports = {
+  copyDir,
+}
