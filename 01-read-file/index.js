@@ -7,10 +7,10 @@ const pathToText = path.join(__dirname, "text.txt");
 async function readFile() {
   try {
     const resp = await fs.readFile(pathToText);
-    stdout.write(resp.toString())
+    stdout.write(resp.toString());
   } catch (error) {
-    stderr.write("error: ", error.message)
+    stderr.write("error: ", error.message);
   }
 }
 
-readFile()
+readFile();

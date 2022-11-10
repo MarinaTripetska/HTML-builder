@@ -7,7 +7,7 @@ const pathToDir = path.join(__dirname, "secret-folder");
 function bytesToKBytes(bytes) {
   var i = parseInt(Math.floor(Math.log(bytes) / Math.log(1000)));
   return (bytes / Math.pow(1000, i)).toFixed(3);
-};
+}
 
 async function readDir() {
   try {
@@ -23,10 +23,12 @@ async function readDir() {
 
         fs.stat(pathToFile).then((res) => {
           console.log(
-            `${nameFile.replace(extFile, "")} - ${extFile.replace(".", "")} - ${bytesToKBytes(res.size)}kb`
+            `${nameFile.replace(extFile, "")} - ${extFile.replace(
+              ".",
+              ""
+            )} - ${bytesToKBytes(res.size)}kb`
           );
         });
-
       }
     });
   } catch (error) {

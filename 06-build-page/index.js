@@ -1,43 +1,39 @@
 const fs = require("fs/promises");
+const { WriteStream } = require("fs");
 const path = require("path");
 
 const { buildStyles } = require("../05-merge-styles");
 const { copyDir } = require("../04-copy-directory");
 
-async function buildHTML (pathSrc, pathToDest, pathToComponentsDir) {
+async function buildHTML(pathSrc, pathToDest, pathToComponentsDir) {
   try {
-    const componentsNames = [];
     const template = await fs.readFile(pathSrc, "utf8");
     let result = template;
 
-    const components = await fs.readdir(pathToComponentsDir, { withFileTypes: true });
-    components.forEach(comp => {
-      if(comp.isFile()){
-        const fileType = path.extname(comp.name);
-        if(fileType === ".html"){
-          const name = path.basename(comp.name).replace(fileType, "");
-          componentsNames.push(name);
-        }
-      }
+    const components = await fs.readdir(pathToComponentsDir, {
+      withFileTypes: true,
     });
 
-    componentsNames.forEach(async name => {
-      const positionInTxt = template.search(`{{${name}}}`);
+    components.forEach(async (comp) => {
+      if (comp.isFile()) {
+        const fileType = path.extname(comp.name);
+        const filePath = path.join(pathToComponentsDir, comp.name);
+        const fileName = path.basename(comp.name).replace(fileType, "");
 
-      if(positionInTxt !== -1) {
-        const pathToComponent = path.join(pathToComponentsDir, `${name}.html`);
-        const componentContent = await fs.readFile(pathToComponent, "utf8")
-        result = result.replace(`{{${name}}}`, componentContent);
-        await fs.writeFile(pathToDest, result);
+        if (fileType === ".html") {
+          const fileContent = await fs.readFile(filePath, "utf-8");
+          const outputHTML = await WriteStream(pathToDest);
+          result = result.replaceAll(`{{${fileName}}}`, fileContent);
+          outputHTML.write(result);
+        }
       }
     })
-
   } catch (error) {
     console.log(error.message);
   }
 }
 
-async function buildPage () {
+async function buildPage() {
   const pathToStylesDir = path.join(__dirname, "styles");
   const pathToDistDir = path.join(__dirname, "project-dist");
   const pathToAssetsSrc = path.join(__dirname, "assets");
@@ -47,19 +43,18 @@ async function buildPage () {
   const pathToTemplatesDir = path.join(__dirname, "components");
 
   try {
-    await fs.rm(pathToDistDir, { recursive: true, force: true})
+    await fs.rm(pathToDistDir, { recursive: true, force: true });
     //create dist dir:
     await fs.mkdir(pathToDistDir, { recursive: true });
     //create bundle css file:
     await buildStyles(pathToStylesDir, pathToDistDir);
     //copy assets dir:
-    await copyDir(pathToAssetsSrc, pathToAssetsCopy)
+    await copyDir(pathToAssetsSrc, pathToAssetsCopy);
     // create html bundle:
     await buildHTML(pathToHTML, pathToBuildHTML, pathToTemplatesDir);
-
   } catch (error) {
     console.log(error);
   }
-};
+}
 
 buildPage();
